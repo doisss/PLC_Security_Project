@@ -1,0 +1,39 @@
+@startuml "Негативный сценарий 1: Атака на данные"
+
+title Негативный сценарий №1: Компрометация данных
+
+actor "Злоумышленник" as attacker #red
+participant "Центральная система управления" as central_control
+participant "Модуль связи" as conn
+participant "Система управления\nПЛК" as control_plc
+participant "Оборудование" as equipment
+
+group Установка режимов
+
+central_control -> conn: задание на перевозку
+conn -> control_plc: задание на перевозку
+
+attacker -[#red]> conn: [Атака] Подмена данных от датчиков
+note over attacker
+Злоумышленник изменяет данные,
+поступающие от датчиков.
+Это приводит к ошибочной обработке команд.
+end note
+
+control_plc -> equipment: некорректные команды
+equipment --> control_plc: подтверждение выполнения
+control_plc --> conn: подтверждение выполнения
+conn --> central_control: подтверждение выполнения
+
+end
+
+
+group Последствия атаки
+equipment -> equipment: повреждение оборудования
+note over equipment
+Некорректные команды могут привести
+к выходу оборудования из строя.
+end note
+end
+
+@enduml
