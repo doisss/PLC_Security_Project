@@ -1,0 +1,39 @@
+@startuml "Негативный сценарий 2: Атака на команды"
+
+title Негативный сценарий №2: Компрометация команд
+
+actor "Злоумышленник" as attacker #red
+participant "Центральная система управления" as central_control
+participant "Модуль связи" as conn
+participant "Система управления\nПЛК" as control_plc
+participant "Оборудование" as equipment
+
+group Установка режимов
+
+central_control -> conn: задание на перевозку
+conn -> control_plc: задание на перевозку
+control_plc -> equipment: команды для оборудования
+
+attacker -[#red]> equipment: [Атака] Отправка некорректных команд
+note over attacker
+Злоумышленник отправляет
+некорректные команды напрямую
+на оборудование.
+end note
+
+equipment --> control_plc: подтверждение выполнения
+control_plc --> conn: подтверждение выполнения
+conn --> central_control: подтверждение выполнения
+
+end
+
+
+group Последствия атаки
+equipment -> equipment: повреждение оборудования
+note over equipment
+Некорректные команды могут привести
+к аварии или отказу оборудования.
+end note
+end
+
+@enduml
