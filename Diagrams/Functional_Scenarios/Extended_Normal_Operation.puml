@@ -1,0 +1,47 @@
+@startuml "базовый сценарий + hla"
+
+actor "Оператор" as op
+participant "Центральная система управления" as central_control
+participant "1. Связь" as conn
+participant "2. Система управления\nПЛК" as control_plc
+participant "3. Управление\nоборудованием" as control_equipment
+participant "4. Система\nдиагностики" as self_diag
+
+
+group Установка режимов
+
+op -> central_control++: задание на перевозку
+central_control -> conn: задание на перевозку
+conn -> control_plc++: задание на перевозку
+control_plc -> control_equipment++: команды для оборудования
+control_equipment -> control_equipment: выполнение команд
+control_equipment --> conn--: подтверждение выполнения
+conn --> central_control: подтверждение выполнения
+central_control --> op--: подтверждение выполнения
+
+end
+
+
+group Самодиагностика и статус
+control_equipment -> self_diag: статус
+self_diag -> control_plc: статус 
+control_plc -> conn: состояние ПЛК
+conn -> central_control: состояние системы
+central_control -> op: состояние системы
+end
+
+group Ручное управление
+
+op -> central_control++: принудительная команда
+central_control -> conn: принудительная команда
+conn -> control_plc++: принудительная команда
+control_plc -> control_equipment++: принудительная команда
+control_equipment --> control_plc--: подтверждение выполнения
+control_plc --> conn--: подтверждение выполнения
+conn --> central_control: подтверждение выполнения
+central_control --> op--: подтверждение выполнения
+
+end
+
+
+@enduml
