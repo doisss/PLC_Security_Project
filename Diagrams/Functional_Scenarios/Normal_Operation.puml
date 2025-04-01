@@ -1,0 +1,46 @@
+@startuml "Базовый сценарий"
+
+title Базовый сценарий
+
+actor "Оператор" as op
+participant "Центральная система управления" as central_control
+participant "ПЛК" as plc
+participant "Оборудование" as equipment
+
+group Установка режимов
+
+op -> central_control++: задание на перевозку
+central_control -> plc++: задание на перевозку
+plc -> plc: анализ задания
+plc -> equipment: команды для оборудования
+
+note over central_control
+Возможные варианты:
+- Задание на перемещение груза от точки A до точки B
+- Задание на контроль параметров оборудования
+end note
+
+equipment --> plc--: подтверждение выполнения
+plc --> central_control--: подтверждение выполнения
+central_control --> op--: подтверждение выполнения
+
+end
+
+
+group Самодиагностика и статус
+plc -> plc: самодиагностика
+plc -> central_control: состояние ПЛК
+central_control -> op: состояние системы
+end
+
+group Ручное управление
+
+op -> central_control++: принудительная команда
+central_control -> plc++: принудительная команда
+plc -> plc: выполнение команды
+plc --> central_control--: подтверждение выполнения
+central_control --> op--: подтверждение выполнения
+
+end
+
+@enduml
